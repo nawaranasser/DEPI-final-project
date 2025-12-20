@@ -52,16 +52,14 @@ Main components:
 ├── devops-project-1-jenkins-nexus/
 │   ├── terraform/
 │   ├── ansible/
-│   ├── jenkins/
-│   ├── kubernetes/
-│   └── README.md
+│   ├── Jenkimsfile
+│   └── k8s/   
 │
 ├── devops-project-2-github-actions-ecr/
 │   ├── terraform/
 │   ├── ansible/
 │   ├── github-actions/
-│   ├── kubernetes/
-│   └── README.md
+│   └──kubernetes/    
 │
 ├── diagrams/
 │   └── architecture.png
