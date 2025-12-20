@@ -59,7 +59,7 @@ Main components:
 │   ├── terraform/
 │   ├── ansible/
 │   ├── github-actions/
-│   └──kubernetes/    
+│   └── kubernetes/    
 │
 ├── diagrams/
 │   └── architecture.png
