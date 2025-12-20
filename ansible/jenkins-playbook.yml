@@ -1,0 +1,149 @@
+---
+- name: Install Jenkins using Docker (Clean & Stable)
+  hosts: jenkins
+  become: true
+  gather_facts: false
+
+  vars:
+    jenkins_home: /home/ec2-user/jenkins_home
+    init_groovy_host: /tmp/init.groovy.d
+    awsAccessKey: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+    awsSecretKey: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+
+
+  tasks:
+    - name: Update system packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Create init.groovy.d folder on host
+      file:
+        path: "{{ init_groovy_host }}"
+        state: directory
+        mode: '0755'        
+
+    - name: Copy admin user script
+      copy:
+        dest: "{{ init_groovy_host }}/create_admin.groovy"
+        content: |
+          import jenkins.model.*
+          import hudson.security.*
+
+          def instance = Jenkins.getInstance()
+
+          def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+          hudsonRealm.createAccount("admin", "Admin123")
+          instance.setSecurityRealm(hudsonRealm)
+
+          def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+          strategy.setAllowAnonymousRead(false)
+          instance.setAuthorizationStrategy(strategy)
+
+          instance.save()
+
+    - name: Copy credentials script
+      copy:
+        dest: "{{ init_groovy_host }}/create_credentials.groovy"
+        content: |
+          import jenkins.model.*
+          import com.cloudbees.plugins.credentials.*
+          import com.cloudbees.plugins.credentials.domains.*
+          import com.cloudbees.plugins.credentials.impl.*
+          import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
+
+          def jenkins = Jenkins.getInstance()
+
+          // AWS Credentials from env variables
+          def awsAccessKey = System.getenv("AWS_ACCESS_KEY_ID")
+          def awsSecretKey = System.getenv("AWS_SECRET_ACCESS_KEY")
+
+          def awsCredentials = new UsernamePasswordCredentialsImpl(
+              CredentialsScope.GLOBAL,
+              "aws-credentials",
+              "AWS access key",
+              awsAccessKey,
+              awsSecretKey
+          )
+          com.cloudbees.plugins.credentials.CredentialsProvider.lookupStores(jenkins)[0].addCredentials(Domain.global(), awsCredentials)
+
+          // Nexus Credentials
+          def nexusCredentials = new UsernamePasswordCredentialsImpl(
+              CredentialsScope.GLOBAL,
+              "nexus-credentials",
+              "Nexus Docker",
+              "admin",
+              "Admin123"
+          )
+          com.cloudbees.plugins.credentials.CredentialsProvider.lookupStores(jenkins)[0].addCredentials(Domain.global(), nexusCredentials)
+
+          jenkins.save()
+
+    - name: Stop existing Jenkins container if running
+      docker_container:
+        name: jenkins
+        state: absent
+
+
+    - name: Run Jenkins container with Docker CLI
+      docker_container:
+        name: jenkins
+        image: noranasser750/jenkins-with-kubectl-docker-awscli:v2
+        state: started
+        recreate: yes
+        privileged: true
+        user: root
+        restart_policy: always
+        ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - jenkins_home:/var/jenkins_home
+          - "{{ init_groovy_host }}:/var/jenkins_home/init.groovy.d"
+          - ~/.aws:/root/.aws:ro  
+          - ~/.aws:/home/jenkins/.aws
+          - ~/.kube:/home/jenkins/.kube
+          - /var/run/docker.sock:/var/run/docker.sock
+        env:
+          JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"  
+
+    - name: wait for Jenkins to start
+      wait_for:
+        port: 8080
+        delay: 10
+        timeout: 300
+
+    - name: Install Jenkins plugins
+      command: >
+        docker exec jenkins
+        jenkins-plugin-cli
+        --plugins
+        docker-workflow
+        kubernetes
+        git
+        credentials
+        workflow-aggregator
+        blueocean
+
+    - name: Restart Jenkins after plugin installation
+      docker_container:
+        name: jenkins
+        state: started
+        restart: true

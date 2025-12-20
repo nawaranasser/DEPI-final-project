@@ -1,0 +1,121 @@
+- name: Prepare Nexus EC2 instance
+  hosts: nexus_servers
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install Python (required by Ansible)
+      raw: |
+        if ! command -v python3 >/dev/null 2>&1; then
+          yum install -y python3
+        fi
+
+    - name: Install basic packages
+      yum:
+        name:
+          - yum-utils
+          - git
+        state: present
+
+    - name: Install Amazon Linux Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Remove old Nexus data directory if exists
+      file:
+        path: /opt/nexus-data
+        state: absent
+
+    - name: Create Nexus data directory
+      file:
+        path: /opt/nexus-data
+        state: directory
+        owner: 200
+        group: 200
+        mode: '0755'
+
+    - name: Run Nexus using docker run
+      shell: |
+        docker rm -f nexus || true
+        docker run -d \
+          --name nexus \
+          -p 8081:8081 \
+          -p 8083:8083 \
+          -e NEXUS_EULA_ACCEPTED=true \
+          -v /opt/nexus-data:/nexus-data \
+          sonatype/nexus3
+
+
+    - name: Wait for Nexus to be up
+      uri:                      
+        url: http://localhost:8081/
+        status_code: 200
+      register: result
+      retries: 10
+      delay: 15
+      until: result.status == 200 
+
+   
+    - name: Display initial admin password
+      shell: cat /opt/nexus-data/admin.password
+      register: admin_password
+
+    - name: Change Nexus admin password
+      uri:
+        url: "http://127.0.0.1:8081/service/rest/v1/security/users/admin/change-password"
+        method: PUT
+        user: admin
+        password: "{{ admin_password.stdout }}"
+        force_basic_auth: yes
+        headers:
+          Content-Type: text/plain
+        body: "Admin123"
+        status_code: 204
+
+    - name: Enable anonymous access in Nexus
+      uri:
+        url: "http://127.0.0.1:8081/service/rest/v1/security/anonymous"
+        method: PUT
+        user: admin
+        password: Admin123
+        force_basic_auth: yes
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body:
+          enabled: true
+          userId: anonymous
+          realmName: NexusAuthorizingRealm
+        status_code: 200
+
+    - name: Create Docker hosted repository
+      uri:
+        url: "http://127.0.0.1:8081/service/rest/v1/repositories/docker/hosted"
+        method: POST
+        user: admin
+        password: Admin123
+        force_basic_auth: yes
+        headers:
+          Content-Type: application/json
+        body_format: json
+        body:
+          name: docker-hosted
+          online: true
+          storage:
+            blobStoreName: default
+            strictContentTypeValidation: true
+            writePolicy: ALLOW
+          docker:
+            v1Enabled: false
+            forceBasicAuth: true
+            httpPort: 8083
+        status_code: 201
+
+ 
