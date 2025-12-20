@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: default
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: PLACEHOLDER_BACKEND_IMAGE
+        ports:
+        - containerPort: 5000  
+        volumeMounts:
+        - mountPath: "/app/backend/data"
+          name: backend-storage
+      volumes:
+      - name: backend-storage
+        persistentVolumeClaim:
+          claimName: backend-pv-claim
