@@ -1,0 +1,109 @@
+name: Build and Deploy to EKS
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER_NAME: bookstore-cluster
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Application Code
+        uses: actions/checkout@v4
+        with:
+          repository: hagarmohamed25/bookstore-app-v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push backend image
+        run: |
+          cd backend
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/bookstore-backend:${{ github.sha }} .
+          docker push ${{ steps.login-ecr.outputs.registry }}/bookstore-backend:${{ github.sha }}
+          echo "${{ steps.login-ecr.outputs.registry }}/bookstore-backend:${{ github.sha }}" > ../backend-image.txt
+
+      - name: Build, tag, and push frontend image
+        run: |
+          cd frontend
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/bookstore-frontend:${{ github.sha }} .
+          docker push ${{ steps.login-ecr.outputs.registry }}/bookstore-frontend:${{ github.sha }}
+          echo "${{ steps.login-ecr.outputs.registry }}/bookstore-frontend:${{ github.sha }}" > ../frontend-image.txt
+
+      - name: Upload image URLs
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-urls
+          path: |
+            backend-image.txt
+            frontend-image.txt
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DevOps Code
+        uses: actions/checkout@v4
+
+      - name: Download image URLs
+        uses: actions/download-artifact@v4
+        with:
+          name: image-urls
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.5"
+          terraform_wrapper: false
+
+      - name: Create load balancer and dns
+        run: |
+          cd terraform
+          terraform init
+          if [ -n "Z0325566216TQV3HZ88NB" ]; then
+            terraform apply -auto-approve -var="domain_name=simple-bookstore.com" -var="hosted_zone_id=Z0325566216TQV3HZ88NB"
+          else
+            terraform apply -auto-approve -var="domain_name=simple-bookstore.com" -var="hosted_zone_id="
+          fi
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install Ansible and dependencies
+        run: |
+          pip install ansible kubernetes openshift
+          ansible-galaxy collection install community.aws kubernetes.core
+
+      - name: Replace image tags
+        run: |
+          BACKEND_IMAGE=$(cat backend-image.txt)
+          FRONTEND_IMAGE=$(cat frontend-image.txt)
+          sed -i "s|PLACEHOLDER_BACKEND_IMAGE|$BACKEND_IMAGE|g" kubernetes/backend-deployment.yaml
+          sed -i "s|PLACEHOLDER_FRONTEND_IMAGE|$FRONTEND_IMAGE|g" kubernetes/frontend-deployment.yaml
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook ansible/playbook.yml
