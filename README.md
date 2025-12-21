@@ -85,7 +85,7 @@ DEPI-final-project/
 | Phase 2 | Infrastructure | Terraform | Provision AWS resources |
 | Phase 3 | Configration | Ansible | configure jenkins and nexus servers |
 | Phase 4 | Pipeline | Jenkins | Build and Push docker images to nexus repo then connect to EKS deployment |
-| Phase 5 | Deployment | Amazon EKS | Run and manage application containers then deply using loud balancer k8s service|
+| Phase 5 | Deployment | Amazon EKS | manage application containers then deply using loud balancer k8s service|
 
 ## Prject 2 Phases:
 
