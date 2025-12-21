@@ -73,6 +73,7 @@ DEPI-final-project/
 └── README.md                  # Root README.md covering full project
 
 ```
+
 ---
 
 # 🧭 Project Phases Overview
