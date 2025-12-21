@@ -190,40 +190,40 @@ Run these commands inside the jenkins container :
 
 ## Project 2:
 
-### Phase 1:
+### Phase 1: Development (Local Repository)
 
-#### ▶️ How to Run Locally
+#### Steps:
 
-1️⃣ Build and Run Containers
+1. Build and Run Containers
 ```bash
 docker-compose up -d
 ```
 
-2️⃣ Access the Apps in Your Browser
+2. Access the Apps in Your Browser
 
 `Frontend: http://localhost:3000`
 `Backend: http://localhost:5000`
 
-#### ✅ Outcome
+#### ✅ local Outcome
 - Backend and Frontend run in separate containers.
 - Frontend proxies API requests to the Backend.
 - Ready for local development or to be pushed to AWS ECR for EKS deployment.
 
 
-### Phase 2:
+### Phase 2: Infrastructure (Terraform)
 
 #### Steps to run Terraform:
-1️⃣ Initialize Terraform
+1. Initialize Terraform
 ```
 terraform init
 ```
-2️⃣ Plan the deployment
+2. Plan the deployment
 ```
 terraform plan
 ```
 Review resources to be created
 
-3️⃣ Apply the deployment
+3. Apply the deployment
 ```
 terraform apply
 ```
