@@ -182,127 +182,7 @@ Run these commands inside the jenkins container :
 
   - kubectl get svc bookstore-frontend
 6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
-
- Phase 1 
-🎯 Outcomes
-After running Terraform:
-Networking
-
-Public subnets have direct internet access
-Private subnets route through NAT
-Secure multi-tier architecture established
-Security Groups
-Frontend accessible on HTTP (port 80)
-Backend only communicates with Frontend (port 5000)
-Jenkins and Nexus secured with SSH and application ports
-
-EKS
-
-Fully provisioned Kubernetes cluster
-Worker nodes with proper IAM roles and networking
-Cluster ready for deploying containers
-
-Jenkins
-
-EC2 instance up and running
-Full access to EKS for CI/CD pipelines
-Secure SSM access enabled
-
-Nexus
-
-EC2 instance hosting Docker registry
-Persistent EBS volume attached for data durability
-Accessible for pushing/pulling images
-
-Outputs
-
-RDS endpoint (rds_endpoint)
-Nexus public IP and URL (nexus_public_ip, nexus_url)
-Jenkins public IP and URL (jenkins_public_ip, jenkins_url)
-EKS cluster endpoint and name (eks_cluster_endpoint, eks_cluster_name)
-
-▶️ How to Run
-1️⃣ Prepare Environment
-
-Install Terraform and AWS CLI
-
-Configure AWS credentials:
-
-aws configure
-
-2️⃣ Initialize Terraform
-terraform init
-
-3️⃣ Review Execution Plan
-terraform plan
-
-4️⃣ Apply Configuration
-terraform apply
-
-
-Confirm with yes
-
-5️⃣ Verify Resources
-
-EKS Cluster
-
-aws eks update-kubeconfig --region <region> --name bookstore-eks
-kubectl get nodes
-
-
-Jenkins & Nexus
-
-Jenkins URL: http://<jenkins_public_ip>:8080
-
-Nexus URL: http://<nexus_public_ip>:8081
-
-Database
-
-terraform output rds_endpoint
-
-6️⃣ Retrieve Outputs
-terraform output
-
-
-Or get a specific resource:
-terraform output nexus_url
-terraform output jenkins_url
-terraform output rds_endpoint
-
-⚙️ Notes
-
-Override default variables using terraform.tfvars or -var flag
-Sensitive data (like passwords) are marked sensitive in outputs
-This setup is suitable for development and testing environments
-
-
-
-
-Phase 4
-
-▶️ How to Run
-
-Ensure Jenkins is running and has:
-Docker installed
-AWS CLI configured
-
-kubectl installed
-
-Nexus credentials added (nexus-credentials)
-
-Create a Jenkins job with this pipeline script.
-Run the pipeline:
-Jenkins will automatically build, push, and deploy to EKS
-
-✅ Outcomes
-Docker images for frontend and backend are built locally
-Images are pushed to Nexus Docker registry
-EKS cluster is updated with the latest deployments
-Frontend and Backend services are accessible via Kubernetes services
-
-
-
-
+---
 
 # 📦 Bookstore Project 2
 
@@ -312,6 +192,7 @@ It is designed to run locally, ready for testing, development, or pushing to Doc
 
 ---
 Phase 1
+
 ## ▶️ How to Run Locally
 
 ### 1️⃣ Build and Run Containers
