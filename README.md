@@ -77,6 +77,16 @@ DEPI-final-project/
 
 # 🧭 Project Phases Overview
 
+## Prject 1 Phases:
+
+| Phase | Stage | Tool | Purpose |
+|------|-------|------|---------|
+| Phase 1 | Development | Local Repository | Application code development |
+| Phase 2 | Infrastructure | Terraform | Provision AWS resources |
+| Phase 3 | Configration | Ansible | configure jenkins and nexus servers |
+| Phase 4 | Pipeline | Jenkins | Build and Push docker images to nexus repo then connect to EKS deployment |
+| Phase 5 | Deployment | Amazon EKS | Run and manage application containers |
+
 ## Prject 2 Phases:
 
 | Phase | Stage | Tool | Purpose |
