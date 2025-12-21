@@ -296,7 +296,7 @@ git push origin main
 
 • Add more features
 
-• Deployment the second project
+• Deploy the second project
 
 ---
 
