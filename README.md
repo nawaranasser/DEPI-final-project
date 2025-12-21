@@ -67,9 +67,8 @@ DEPI-final-project/
 │       ├── Dockerfile             # Dockerfile for containerizing the app
 │       └── README.md              # Optional README for the app itself
 │
-├── diagrams/
-│   ├── Diagram1.png           # Architecture diagram for Project 1
-│   └── Diagram2.png           # Architecture diagram for Project 2
+├── Diagram1.png                   # Architecture diagram for Project 1
+├── Diagram2.png                   # Architecture diagram for Project 2
 │
 └── README.md                  # Root README.md covering full project
 
