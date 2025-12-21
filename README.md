@@ -46,28 +46,33 @@ Main components:
 
 ```bash
 .
-├── bookstore-app/
-│   ├── backend/
-│   ├── frontend/
-│   ├── Dockerfile
-│   └── README.md
+DEPI-final-project/
+├── Project1/
+│   ├── terraform/             # Terraform scripts for AWS infrastructure
+│   ├── ansible/               # Ansible playbooks for configuration
+│   ├── Jenkimsfile            # Jenkins pipeline definition
+│   └── k8s/                   # Kubernetes manifests for deployment
 │
-├── devops-project-1-jenkins-nexus/
-│   ├── terraform/
-│   ├── ansible/
-│   ├── Jenkimsfile
-│   └── k8s/   
 │
-├── devops-project-2-github-actions-ecr/
-│   ├── terraform/
-│   ├── ansible/
-│   ├── github-actions/
-│   └── kubernetes/    
+├── Project-2/
+│   ├── bookstore-devops/
+│   │   ├── terraform/             # Terraform scripts for AWS infrastructure
+│   │   ├── ansible/               # Ansible playbooks
+│   │   ├── github-actions/        # GitHub Actions workflows for CI/CD
+│   │   └── kubernetes/            # Kubernetes manifests for deployment
+│   │
+│   └── bookstore-app-v2/
+│       ├── backend/               # Backend code for bookstore application
+│       ├── frontend/              # Frontend code for bookstore application
+│       ├── Dockerfile             # Dockerfile for containerizing the app
+│       └── README.md              # Optional README for the app itself
 │
 ├── diagrams/
-│   └── architecture.png
+│   ├── Diagram1.png           # Architecture diagram for Project 1
+│   └── Diagram2.png           # Architecture diagram for Project 2
 │
-└── README.md
+└── README.md                  # Root README.md covering full project
+
 ```
 
 ---
