@@ -16,6 +16,16 @@ This comprehensive DevOps approach demonstrates how to achieve rapid, reliable, 
 
 ---
 
+## 📌 Architecture diagrams:
+### Diagram of Project 1:
+
+![Project Diagram](Diagram1.png)
+
+### Diagram of Project 2:
+
+![Project Diagram](Diagram2.png)
+
+
 ## 🏗️ High-Level Architecture
 
 **Cloud Provider:** AWS  
@@ -26,17 +36,10 @@ Main components:
 - NAT Gateway, Route Tables, Internet Gateway
 - EC2 instances
 - Amazon EKS cluster with managed node groups
-- Application Load Balancer
+- Application Load Balancer or Cluster Load Balancer
 - CI/CD pipelines
 - Artifact & container registries
-
-## 📌 Architecture diagrams:
-### Diagram of Project 1:
-![Project Diagram](Project_Diagram.png)
-
-### Diagram of Project 2:
-![Project Diagram](Project_Diagram.png)
-
+  
 ---
 
 ## 📂 Repository Structure
