@@ -6,7 +6,7 @@ This repository showcases **two different DevOps implementations** using modern 
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 This initiative establishes a robust DevOps pipeline for a modern bookstore application on AWS, employing Infrastructure as Code (IaC) principles. We utilise Terraform to provision a production-grade Amazon EKS cluster, complete with essential networking, security, and load-balancing configurations.
 
@@ -16,7 +16,7 @@ This comprehensive DevOps approach demonstrates how to achieve rapid, reliable, 
 
 ---
 
-## 📌 Architecture diagrams:
+# 📌 Architecture diagrams:
 ### Diagram of Project 1:
 
 ![Project Diagram](Diagram1.png)
@@ -26,7 +26,7 @@ This comprehensive DevOps approach demonstrates how to achieve rapid, reliable, 
 ![Project Diagram](Diagram2.png)
 
 
-## 🏗️ High-Level Architecture
+# 🏗️ High-Level Architecture
 
 **Cloud Provider:** AWS  
 **Orchestration:** Kubernetes (EKS)
@@ -42,7 +42,7 @@ Main components:
   
 ---
 
-## 📂 Repository Structure
+# 📂 Repository Structure
 
 ```bash
 .
@@ -77,7 +77,7 @@ DEPI-final-project/
 
 ---
 
-## 🔮 Future Improvements
+# 🔮 Future Improvements
 
 • Improvement in Application
 
@@ -87,7 +87,13 @@ DEPI-final-project/
 
 ---
 
-## 👨‍💻 Contributors
+# ▶️ Project 1 Resources:
+
+[!🎬[Demo Video](https://drive.google.com/file/d/18imYXqB4_ruSp2dD68rEinkiTgiUTp2l/view?usp=sharing)]
+
+---
+
+# 👨‍💻 Contributors
 
 • **Nora Nasser** - DevOps Engineer
 
