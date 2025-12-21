@@ -105,7 +105,7 @@ DEPI-final-project/
 
 ## Project 1:
 
-###Steps:
+### Steps:
 
 1️⃣ Prepare Environment
 
@@ -212,7 +212,7 @@ docker-compose up -d
 
 ### Phase 2: Infrastructure (Terraform)
 
-#### Steps to run Terraform:
+#### Steps:
 1. Initialize Terraform
 ```
 terraform init
