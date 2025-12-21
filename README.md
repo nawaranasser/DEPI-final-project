@@ -134,52 +134,54 @@ Nexus URL: http://<nexus_public_ip>:8081
 8️⃣ Follow URL in the terraform output to open jenkins & nexus servers :  Nexus URL: http://<nexus_public_ip>:8081 , Jenkins URL: http://<jenkins_public_ip>:8080
 
 9️⃣ SSH into Jenkins EC2 : ssh -i your-key.pem ec2-user@ip-Jenkins
+
 Run these commands inside the jenkins container :
-- sudo vi /etc/docker/daemon.json
+
+1- sudo vi /etc/docker/daemon.json
 {
   "insecure-registries": ["ip-nexus:8083"]
 }
 
-- sudo systemctl restart docker
+2- sudo systemctl restart docker
 
-- docker login ip-nexus:8083
+3- docker login ip-nexus:8083
 
-username: admin
-password: Admin123
+    username: admin
+    password: Admin123
+    -->>Login Succeeded
 
-- ->>Login Succeeded
+4- in your local machine Run :
+ 
+ - kubectl edit configmap aws-auth -n kube-system
+       
+        apiVersion: v1
+        data:
+        mapRoles: |
+          - rolearn: arn:aws:iam::992487937555:role/eks-node-role
+            username: system:node:{{EC2PrivateDNSName}}
+            groups:
+              - system:bootstrappers
+              - system:nodes
+      
+          - rolearn: arn:aws:iam::992487937555:role/jenkins-role      #add this
+            username: jenkins
+            groups:
+              - system:masters
 
-- in your local machine Run :
-- kubectl edit configmap aws-auth -n kube-system
-  apiVersion: v1
-  data:
-  mapRoles: |
-    - rolearn: arn:aws:iam::992487937555:role/eks-node-role
-      username: system:node:{{EC2PrivateDNSName}}
-      groups:
-        - system:bootstrappers
-        - system:nodes
+5 -  SSH into Jenkins EC2 again
+  -  kubectl get nodes
+  - aws sts get-caller-identity
+    
+  -->> if work 
 
-    - rolearn: arn:aws:iam::992487937555:role/jenkins-role      #add this
-      username: jenkins
-      groups:
-        - system:masters
+  - kubectl create secret docker-registry nexus-secret \
+     --docker-server=nexus-ip:8083 \
+     --docker-username=admin \
+     --docker-password='Admin123' \
+     --namespace=bookstore
 
--  SSH into Jenkins EC2 again
--  kubectl get nodes
-- aws sts get-caller-identity
-
--->> if work 
-
-- kubectl create namespace bookstore
-- kubectl create secret docker-registry nexus-secret \
-   --docker-server=nexus-ip:8083 \
-   --docker-username=admin \
-   --docker-password='Admin123' \
-   --namespace=bookstore
-
-- kubectl get svc bookstore-frontend
-- COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
+  - kubectl get svc bookstore-frontend
+6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
 
 
 ---
