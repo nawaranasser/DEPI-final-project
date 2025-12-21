@@ -48,10 +48,10 @@ Main components:
 .
 DEPI-final-project/
 ├── Project1/
-│   ├── terraform/             # Terraform scripts for AWS infrastructure
-│   ├── ansible/               # Ansible playbooks for configuration
-│   ├── Jenkimsfile            # Jenkins pipeline definition
-│   └── k8s/                   # Kubernetes manifests for deployment
+│   ├── terraform/                # Terraform scripts for AWS infrastructure
+│   ├── ansible/                  # Ansible playbooks for configuration
+│   ├── Jenkimsfile               # Jenkins pipeline definition
+│   └── k8s/                      # Kubernetes manifests for deployment
 │
 │
 ├── Project-2/
@@ -70,7 +70,7 @@ DEPI-final-project/
 ├── Diagram1.png                   # Architecture diagram for Project 1
 ├── Diagram2.png                   # Architecture diagram for Project 2
 │
-└── README.md                  # Root README.md covering full project
+└── README.md                      # Root README.md covering full project
 
 ```
 
@@ -100,9 +100,12 @@ DEPI-final-project/
 | Phase 6 | Deployment | Amazon EKS | Run and manage application containers |
 
 ---
+
 # ▶️ How to run the projects 
 
 ## Project 1:
+
+###Steps:
 
 1️⃣ Prepare Environment
 
@@ -110,33 +113,33 @@ Install Terraform and AWS CLI
 
 Configure AWS credentials: aws configure
 
-2️⃣ Initialize Terraform : terraform init
+2️⃣ Initialize Terraform : ``` terraform init```
 
-3️⃣ Review Execution Plan : terraform plan
+3️⃣ Review Execution Plan : ``` terraform plan```
 
-4️⃣ Apply Configuration : terraform apply
+4️⃣ Apply Configuration : ```terraform apply```
 
 5️⃣ Verify Resources
 
 EKS Cluster
-
+```
 aws eks update-kubeconfig --region <region> --name bookstore-eks
 kubectl get nodes
+```
+Jenkins URL: `http://<jenkins_public_ip>:8080`
 
-Jenkins URL: http://<jenkins_public_ip>:8080
+Nexus URL: `http://<nexus_public_ip>:8081`
 
-Nexus URL: http://<nexus_public_ip>:8081
+6️⃣ Run the Ansibe playbok to configure Nexus : ```ansibel-playbook -i invintory.ini nexus-playbook.yml```
 
-6️⃣ Run the Ansibe playbok to configure Nexus : ansibel-playbook -i invintory.ini nexus-playbook.yml
+7️⃣ Run the Ansibe playbok to configure Nexus : ```ansibel-playbook -i invintory.ini nexus-playbook.yml```
 
-7️⃣ Run the Ansibe playbok to configure Nexus : ansibel-playbook -i invintory.ini nexus-playbook.yml
+8️⃣ Follow URL in the terraform output to open jenkins & nexus servers :  Nexus URL: `http://<nexus_public_ip>:8081` , Jenkins URL: `http://<jenkins_public_ip>:8080`
 
-8️⃣ Follow URL in the terraform output to open jenkins & nexus servers :  Nexus URL: http://<nexus_public_ip>:8081 , Jenkins URL: http://<jenkins_public_ip>:8080
-
-9️⃣ SSH into Jenkins EC2 : ssh -i your-key.pem ec2-user@ip-Jenkins
+9️⃣ SSH into Jenkins EC2 : ```ssh -i your-key.pem ec2-user@ip-Jenkins```
 
 Run these commands inside the jenkins container :
-
+```
 1- sudo vi /etc/docker/daemon.json
 {
   "insecure-registries": ["ip-nexus:8083"]
@@ -182,15 +185,10 @@ Run these commands inside the jenkins container :
 
   - kubectl get svc bookstore-frontend
 6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
-    
+  ```  
 ---
 
 ## Project 2:
-
-This repository contains the **Bookstore application** setup for local development using **Docker Compose**, with separate containers for Frontend and Backend.  
-
-It is designed to run locally, ready for testing, development, or pushing to AWS ECR for deployment to EKS.
-
 
 ### Phase 1:
 
@@ -214,7 +212,7 @@ docker-compose up -d
 
 ### Phase 2:
 
-#### ▶️ How to Run the Terraform Project
+#### Steps to run Terraform:
 1️⃣ Initialize Terraform
 ```
 terraform init
@@ -242,6 +240,45 @@ Outputs will display endpoints, IPs, URLs, ALB DNS, and ECR URLs
   - IAM roles
   - Application Load Balancer
   - ECR Repositories
+
+### Phase 3: CI/CD Pipeline (GitHub Actions)
+
+#### Steps:
+
+1. In GitHub, navigate to:
+`Settings → Secrets and variables → Actions`
+
+2. Add the following secrets:
+`AWS_ACCESS_KEY_ID`
+`AWS_SECRET_ACCESS_KEY`
+`AWS_REGION`
+
+3. Push changes to the repository to trigger the pipeline:
+```
+git add .
+git commit -m "Trigger Project 2 pipeline"
+git push origin main
+```
+
+4. Monitor the workflow execution from the GitHub Actions tab.
+
+#### ✅ Github Actions Outcome:
+
+- GitHub Actions pipeline is triggered.
+- Docker image is built automatically.
+- Image is pushed to Amazon ECR.
+
+### Phase 4: Container Registry (Amazon ECR)
+
+#### Steps:
+
+1. Verify the ECR repository in the AWS Console.
+2. Confirm that the Docker image was pushed successfully by the CI pipeline.
+
+#### ✅ ECR Outcome:
+
+- Docker images are securely stored in Amazon ECR.
+- Images are ready for Kubernetes deployment.
 
 ---
 
