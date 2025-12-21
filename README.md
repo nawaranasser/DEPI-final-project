@@ -39,24 +39,8 @@ Main components:
 - Application Load Balancer or Cluster Load Balancer
 - CI/CD pipelines
 - Artifact & container registries
-  
----
 
-# 🧭 Project Phases Overview
-
-## Prject 2 Phases:
-
-| Phase | Stage | Tool | Purpose |
-|------|-------|------|---------|
-| Phase 1 | Development | Local Repository | Application code development |
-| Phase 2 | CI/CD | GitHub Actions | Build and push Docker images |
-| Phase 3 | Registry | Amazon ECR | Store and manage Docker images |
-| Phase 4 | Infrastructure | Terraform | Provision AWS resources |
-| Phase 5 | Configuration | Ansible | Configure systems and apply Kubernetes manifests |
-| Phase 6 | Deployment | Amazon EKS | Run and manage application containers |
-
-
----
+  ---
 
 # 📂 Repository Structure
 
@@ -89,6 +73,20 @@ DEPI-final-project/
 └── README.md                  # Root README.md covering full project
 
 ```
+---
+
+# 🧭 Project Phases Overview
+
+## Prject 2 Phases:
+
+| Phase | Stage | Tool | Purpose |
+|------|-------|------|---------|
+| Phase 1 | Development | Local Repository | Application code development |
+| Phase 2 | CI/CD | GitHub Actions | Build and push Docker images |
+| Phase 3 | Registry | Amazon ECR | Store and manage Docker images |
+| Phase 4 | Infrastructure | Terraform | Provision AWS resources |
+| Phase 5 | Configuration | Ansible | Configure systems and apply Kubernetes manifests |
+| Phase 6 | Deployment | Amazon EKS | Run and manage application containers |
 
 ---
 
