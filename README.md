@@ -100,7 +100,89 @@ DEPI-final-project/
 | Phase 6 | Deployment | Amazon EKS | Run and manage application containers |
 
 ---
+# ▶️ How to run the projects 
 
+## Project 1 
+
+1️⃣ Prepare Environment
+
+Install Terraform and AWS CLI
+
+Configure AWS credentials: aws configure
+
+2️⃣ Initialize Terraform : terraform init
+
+3️⃣ Review Execution Plan : terraform plan
+
+4️⃣ Apply Configuration : terraform apply
+
+5️⃣ Verify Resources
+
+EKS Cluster
+
+aws eks update-kubeconfig --region <region> --name bookstore-eks
+kubectl get nodes
+
+Jenkins URL: http://<jenkins_public_ip>:8080
+
+Nexus URL: http://<nexus_public_ip>:8081
+
+6️⃣ Run the Ansibe playbok to configure Nexus : ansibel-playbook -i invintory.ini nexus-playbook.yml
+
+7️⃣ Run the Ansibe playbok to configure Nexus : ansibel-playbook -i invintory.ini nexus-playbook.yml
+
+8️⃣ Follow URL in the terraform output to open jenkins & nexus servers :  Nexus URL: http://<nexus_public_ip>:8081 , Jenkins URL: http://<jenkins_public_ip>:8080
+
+9️⃣ SSH into Jenkins EC2 : ssh -i your-key.pem ec2-user@ip-Jenkins
+Run these commands inside the jenkins container :
+- sudo vi /etc/docker/daemon.json
+{
+  "insecure-registries": ["ip-nexus:8083"]
+}
+
+- sudo systemctl restart docker
+
+- docker login ip-nexus:8083
+
+username: admin
+password: Admin123
+
+- ->>Login Succeeded
+
+- in your local machine Run :
+- kubectl edit configmap aws-auth -n kube-system
+  apiVersion: v1
+  data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::992487937555:role/eks-node-role
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+
+    - rolearn: arn:aws:iam::992487937555:role/jenkins-role      #add this
+      username: jenkins
+      groups:
+        - system:masters
+
+-  SSH into Jenkins EC2 again
+-  kubectl get nodes
+- aws sts get-caller-identity
+
+-->> if work 
+
+- kubectl create namespace bookstore
+- kubectl create secret docker-registry nexus-secret \
+   --docker-server=nexus-ip:8083 \
+   --docker-username=admin \
+   --docker-password='Admin123' \
+   --namespace=bookstore
+
+- kubectl get svc bookstore-frontend
+- COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
+
+
+---
 # 🔮 Future Improvements
 
 • Improvement in Application
