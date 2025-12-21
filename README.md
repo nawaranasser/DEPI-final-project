@@ -207,7 +207,7 @@ docker-compose up -d
 #### ✅ Outcome
 - Backend and Frontend run in separate containers.
 - Frontend proxies API requests to the Backend.
-- Ready for local development or to be pushed to Docker/Nexus for EKS deployment.
+- Ready for local development or to be pushed to AWS ECR for EKS deployment.
 
 
 ### Phase 2:
@@ -288,10 +288,22 @@ git push origin main
 
 ---
 
+# 🔮 Future Improvements
+
+• Improvement in Application
+
+• Add monitoring with Prometheus & Grafana
+
+• Add more features
+
+• Deployment the second project
+
+---
+
 # 👨‍💻 Contributors
 
-• **Nora Nasser** - DevOps Engineer
+• **Nora Nasser**   - DevOps Engineer
 
-• **Nada Hussien** - DevOps Engineer
+• **Nada Hussien**  - DevOps Engineer
 
 • **Hagar Mohamed** - DevOps Engineer
