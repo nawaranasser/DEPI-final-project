@@ -184,6 +184,60 @@ Run these commands inside the jenkins container :
 6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
 
 
+
+
+
+
+# 📦 Bookstore Infrastructure Provisioning with Terraform, EKS, Jenkins, and Nexus
+
+This repository contains Terraform scripts to provision a **secure multi-tier AWS infrastructure** for a bookstore application, including networking, EKS cluster, Jenkins, Nexus, and RDS.
+
+---
+
+## 🎯 Outcomes
+
+### Networking
+- **Public subnets:** Direct internet access.
+- **Private subnets:** Route traffic through NAT.
+- **Architecture:** Secure multi-tier design established.
+
+### Security Groups
+- **Frontend:** Accessible on HTTP (port 80).
+- **Backend:** Communicates only with Frontend (port 5000).
+- **Jenkins & Nexus:** Secured with SSH and application ports.
+
+### EKS
+- Fully provisioned **Kubernetes cluster**.
+- Worker nodes with proper **IAM roles** and networking.
+- Cluster ready for **container deployment**.
+
+### Jenkins
+- EC2 instance up and running.
+- Full access to EKS for **CI/CD pipelines**.
+- Secure **SSM access** enabled.
+
+### Nexus
+- EC2 instance hosting **Docker registry**.
+- Persistent **EBS volume** attached for data durability.
+- Accessible for **pushing/pulling images**.
+
+### Outputs
+- **RDS endpoint:** `rds_endpoint`
+- **Nexus public IP & URL:** `nexus_public_ip`, `nexus_url`
+- **Jenkins public IP & URL:** `jenkins_public_ip`, `jenkins_url`
+- **EKS cluster endpoint & name:** `eks_cluster_endpoint`, `eks_cluster_name`
+
+---
+
+## ▶️ How to Run
+
+### 1️⃣ Prepare Environment
+- Install [Terraform](https://www.terraform.io/) and [AWS CLI](https://aws.amazon.com/cli/).
+- Configure AWS credentials:
+
+```bash
+aws configure
+
 ---
 # 🔮 Future Improvements
 
