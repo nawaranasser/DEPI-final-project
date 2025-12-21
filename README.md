@@ -102,7 +102,7 @@ DEPI-final-project/
 ---
 # ▶️ How to run the projects 
 
-## Project 1 
+## Project 1:
 
 1️⃣ Prepare Environment
 
@@ -182,128 +182,66 @@ Run these commands inside the jenkins container :
 
   - kubectl get svc bookstore-frontend
 6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
+    
 ---
 
-# 📦 Bookstore Project 2
+## Project 2:
 
 This repository contains the **Bookstore application** setup for local development using **Docker Compose**, with separate containers for Frontend and Backend.  
 
-It is designed to run locally, ready for testing, development, or pushing to Docker/Nexus for deployment to EKS.
+It is designed to run locally, ready for testing, development, or pushing to AWS ECR for deployment to EKS.
 
----
-Phase 1
 
-## ▶️ How to Run Locally
+### Phase 1:
 
-### 1️⃣ Build and Run Containers
+#### ▶️ How to Run Locally
+
+1️⃣ Build and Run Containers
 ```bash
 docker-compose up -d
+```
 
 2️⃣ Access the Apps in Your Browser
 
-Frontend: http://localhost:3000
+`Frontend: http://localhost:3000`
+`Backend: http://localhost:5000`
 
-Backend: http://localhost:5000
+#### ✅ Outcome
+- Backend and Frontend run in separate containers.
+- Frontend proxies API requests to the Backend.
+- Ready for local development or to be pushed to Docker/Nexus for EKS deployment.
 
-✅ Outcome
 
-Backend and Frontend run in separate containers.
+### Phase 2:
 
-Frontend proxies API requests to the Backend.
-
-Ready for local development or to be pushed to Docker/Nexus for EKS deployment.
-
---------
-Phase 2
-
-🔹 Terraform Outcomes
-Networking
-
-VPC with public & private subnets
-
-NAT Gateway for private subnet internet access
-
-Internet Gateway for public subnet access
-
-Route tables for public & private subnets
-
-Security Groups
-
-Frontend: HTTP 80
-
-Backend: Port 5000 from frontend only
-
-Database: MySQL 3306 from backend only
-
-Jenkins: SSH + 8080 + 50000
-
-Nexus: SSH + 8081 + 8083
-
-ALB: HTTP 80 + HTTPS 443
-
-RDS
-
-MySQL database bookstore
-
-Credentials: admin / MyBookstoreDB123
-
-Private subnet
-
-EKS Cluster
-
-Kubernetes cluster bookstore-eks
-
-NodeGroup with 2 nodes
-
-IAM roles with proper policies (WorkerNode, CNI, ECR read-only)
-
-ALB
-
-Application Load Balancer in public subnets
-
-Security group allows HTTP/HTTPS
-
-Connected to EKS services
-
-ECR Repositories
-
-bookstore-backend
-
-bookstore-frontend
-
-Scan on push enabled
-
-IAM Roles
-
-Jenkins EC2: Full EKS access + SSM + Cluster policies
-
-ALB Controller: Full permissions for load balancer operations
-Terraform Outputs
-rds_endpoint
-jenkins_public_ip & jenkins_url
-nexus_public_ip & nexus_url
-eks_cluster_endpoint & eks_cluster_name
-alb_dns_name & alb_zone_id
-ecr_backend_repo_url & ecr_frontend_repo_url
-
-▶️ How to Run the Terraform Project
+#### ▶️ How to Run the Terraform Project
 1️⃣ Initialize Terraform
+```
 terraform init
-
+```
 2️⃣ Plan the deployment
+```
 terraform plan
-
+```
 Review resources to be created
 
 3️⃣ Apply the deployment
+```
 terraform apply
-
+```
 Confirm to create all AWS resources
 Outputs will display endpoints, IPs, URLs, ALB DNS, and ECR URLs
 
-4️⃣ Note Terraform Outputs
-terraform output
-Use these outputs for Jenkins, Nexus, EKS cluster access, and ALB endpoints
+#### ✅ Terraform Outcomes
+
+- AWS infrastructure is created automatically:
+  - VPC, subnets, route tables
+  - Internet Gateway & NAT Gateway
+  - Security Groups
+  - EKS cluster and worker nodes
+  - IAM roles
+  - Application Load Balancer
+  - ECR Repositories
 
 ---
 
