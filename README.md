@@ -183,60 +183,106 @@ Run these commands inside the jenkins container :
   - kubectl get svc bookstore-frontend
 6 - COPY the Extrnal IP and open it in any browser -> NOW your app is LIVE
 
+ Phase 1 
+🎯 Outcomes
+After running Terraform:
+Networking
 
+Public subnets have direct internet access
+Private subnets route through NAT
+Secure multi-tier architecture established
+Security Groups
+Frontend accessible on HTTP (port 80)
+Backend only communicates with Frontend (port 5000)
+Jenkins and Nexus secured with SSH and application ports
 
+EKS
 
+Fully provisioned Kubernetes cluster
+Worker nodes with proper IAM roles and networking
+Cluster ready for deploying containers
 
+Jenkins
 
-# 📦 Bookstore Infrastructure Provisioning with Terraform, EKS, Jenkins, and Nexus
+EC2 instance up and running
+Full access to EKS for CI/CD pipelines
+Secure SSM access enabled
 
-This repository contains Terraform scripts to provision a **secure multi-tier AWS infrastructure** for a bookstore application, including networking, EKS cluster, Jenkins, Nexus, and RDS.
+Nexus
 
----
+EC2 instance hosting Docker registry
+Persistent EBS volume attached for data durability
+Accessible for pushing/pulling images
 
-## 🎯 Outcomes
+Outputs
 
-### Networking
-- **Public subnets:** Direct internet access.
-- **Private subnets:** Route traffic through NAT.
-- **Architecture:** Secure multi-tier design established.
+RDS endpoint (rds_endpoint)
+Nexus public IP and URL (nexus_public_ip, nexus_url)
+Jenkins public IP and URL (jenkins_public_ip, jenkins_url)
+EKS cluster endpoint and name (eks_cluster_endpoint, eks_cluster_name)
 
-### Security Groups
-- **Frontend:** Accessible on HTTP (port 80).
-- **Backend:** Communicates only with Frontend (port 5000).
-- **Jenkins & Nexus:** Secured with SSH and application ports.
+▶️ How to Run
+1️⃣ Prepare Environment
 
-### EKS
-- Fully provisioned **Kubernetes cluster**.
-- Worker nodes with proper **IAM roles** and networking.
-- Cluster ready for **container deployment**.
+Install Terraform and AWS CLI
 
-### Jenkins
-- EC2 instance up and running.
-- Full access to EKS for **CI/CD pipelines**.
-- Secure **SSM access** enabled.
+Configure AWS credentials:
 
-### Nexus
-- EC2 instance hosting **Docker registry**.
-- Persistent **EBS volume** attached for data durability.
-- Accessible for **pushing/pulling images**.
-
-### Outputs
-- **RDS endpoint:** `rds_endpoint`
-- **Nexus public IP & URL:** `nexus_public_ip`, `nexus_url`
-- **Jenkins public IP & URL:** `jenkins_public_ip`, `jenkins_url`
-- **EKS cluster endpoint & name:** `eks_cluster_endpoint`, `eks_cluster_name`
-
----
-
-## ▶️ How to Run
-
-### 1️⃣ Prepare Environment
-- Install [Terraform](https://www.terraform.io/) and [AWS CLI](https://aws.amazon.com/cli/).
-- Configure AWS credentials:
-
-```bash
 aws configure
+
+2️⃣ Initialize Terraform
+terraform init
+
+3️⃣ Review Execution Plan
+terraform plan
+
+4️⃣ Apply Configuration
+terraform apply
+
+
+Confirm with yes
+
+5️⃣ Verify Resources
+
+EKS Cluster
+
+aws eks update-kubeconfig --region <region> --name bookstore-eks
+kubectl get nodes
+
+
+Jenkins & Nexus
+
+Jenkins URL: http://<jenkins_public_ip>:8080
+
+Nexus URL: http://<nexus_public_ip>:8081
+
+Database
+
+terraform output rds_endpoint
+
+6️⃣ Retrieve Outputs
+terraform output
+
+
+Or get a specific resource:
+
+terraform output nexus_url
+terraform output jenkins_url
+terraform output rds_endpoint
+
+⚙️ Notes
+
+Override default variables using terraform.tfvars or -var flag
+
+Sensitive data (like passwords) are marked sensitive in outputs
+
+This setup is suitable for development and testing environments
+
+
+
+
+
+
 
 ---
 # 🔮 Future Improvements
