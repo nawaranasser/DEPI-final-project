@@ -304,14 +304,14 @@ Frontend and Backend services are accessible via Kubernetes services
 
 
 
-# 📦 Bookstore Project 2: Local Development with Docker Compose
+# 📦 Bookstore Project 2
 
 This repository contains the **Bookstore application** setup for local development using **Docker Compose**, with separate containers for Frontend and Backend.  
 
 It is designed to run locally, ready for testing, development, or pushing to Docker/Nexus for deployment to EKS.
 
 ---
-
+Phase 1
 ## ▶️ How to Run Locally
 
 ### 1️⃣ Build and Run Containers
